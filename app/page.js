@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useEffect } from "react";
 import Link from "next/link";
 import { supabase } from "../lib/supabase";
+import { Button } from "@/components/ui/button";
 
 
 export default function Home() {
@@ -224,6 +225,7 @@ export default function Home() {
 
         <div>
             {/* <h1>Check Console (F12)</h1> */}
+            
             <h1 className="text-2xl flex justify-center items-center p-4">Student Home page</h1>
             <br />
             <br />
@@ -280,10 +282,12 @@ export default function Home() {
                     <option className="bg-black" value="Male">Male</option>
                     <option className="bg-black" value="Female">Female</option>
                 </select>
-                <button className="bg-sky-400 text-black h-12 px-8"
-                    onClick={addStudent1}>
+                <Button 
+                onClick={addStudent1}
+                className="bg-sky-400 text-black h-12 px-8"
+                    >
                     Add
-                </button>
+                </Button>
                 {/* <ul>
            {students.map((student, index) => (
            <li className="ml-2 mt-2"  key={index}>
