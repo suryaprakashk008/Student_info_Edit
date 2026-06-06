@@ -5,7 +5,29 @@ import { useEffect } from "react";
 import Link from "next/link";
 import { supabase } from "../lib/supabase";
 import { Button } from "@/components/ui/button";
-
+import { Input } from "@/components/ui/input";
+import { Table, TableBody, TableCaption, TableCell, TableFooter, TableHead, TableHeader, TableRow, } from "@/components/ui/table";
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuGroup,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuPortal,
+    DropdownMenuSeparator,
+    DropdownMenuShortcut,
+    DropdownMenuSub,
+    DropdownMenuSubContent,
+    DropdownMenuSubTrigger,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
 
 export default function Home() {
 
@@ -225,7 +247,7 @@ export default function Home() {
 
         <div>
             {/* <h1>Check Console (F12)</h1> */}
-            
+
             <h1 className="text-2xl flex justify-center items-center p-4">Student Home page</h1>
             <br />
             <br />
@@ -251,43 +273,49 @@ export default function Home() {
 
             </Link> */}
             <div>
-                {/* <input className="h-12 px-3 border-1 mr-2 ml-2"
+                <div className="flex justify-center">
+                    {/* <input className="h-12 px-3 border-1 mr-2 ml-2"
                     type="text"
                     placeholder="Enter the name"
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
                 /> */}
-                <input
-                    className="h-12 px-3 border mr-2 ml-2"
-                    type="text"
-                    placeholder="Enter name"
-                    value={input}
-                    onChange={(e) => setInput(e.target.value)}
-                />
+                    <Input
+                        className="w-74 mr-2 ml-2 p-5"
+                        type="text"
+                        placeholder="Enter name"
+                        value={input}
+                        onChange={(e) => setInput(e.target.value)}
+                    />
 
-                <input
-                    className="h-12 px-3 border mr-2"
-                    type="number"
-                    placeholder="Enter age"
-                    value={age}
-                    onChange={(e) => setAge(e.target.value)}
-                />
+                    <Input
+                        className="w-74 mr-3 p-5"
+                        type="number"
+                        placeholder="Enter age"
+                        value={age}
+                        onChange={(e) => setAge(e.target.value)}
+                    />
 
-                <select
-                    className="h-12 px-3 border mr-2"
-                    value={gender}
-                    onChange={(e) => setGender(e.target.value)}
-                >
-                    <option className="bg-black" value="">Gender</option>
-                    <option className="bg-black" value="Male">Male</option>
-                    <option className="bg-black" value="Female">Female</option>
-                </select>
-                <Button 
-                onClick={addStudent1}
-                className="bg-sky-400 text-black h-12 px-8"
+                    <Select
+                        value={gender}
+                        onValueChange={(value) => setGender(value)}
                     >
-                    Add
-                </Button>
+                        <SelectTrigger className="w-[180px] p-5 mr-3">
+                            <SelectValue placeholder="Gender" />
+                        </SelectTrigger>
+
+                        <SelectContent>
+                            <SelectItem value="Male">Male</SelectItem>
+                            <SelectItem value="Female">Female</SelectItem>
+                        </SelectContent>
+                    </Select>
+                    <Button
+                        onClick={addStudent1}
+                        className=" mt-1 py-4 px-8"
+                    >
+                        Add
+                    </Button>
+                </div>
                 {/* <ul>
            {students.map((student, index) => (
            <li className="ml-2 mt-2"  key={index}>
@@ -297,56 +325,56 @@ export default function Home() {
            </ul> */}
                 <br />
                 <br />
-                <Link href="/display" target="_blank" className="ml-3 ">
+                {/* <Link href="/display" target="_blank" className="ml-3 ">
                     Display Students
-                </Link>
+                </Link> */}
                 <br />
                 <br />
                 <div>
-                    <h1 className="ml-5">Students List</h1>
+                    <h1 className="ml-9">Students List</h1>
 
-                    <table className="border-collapse border border-white ml-5">
-                        <thead>
-                            <tr>
-                                <th className="border border-white px-4 py-2">ID</th>
-                                <th className="border border-white px-4 py-2">Name</th>
-                                <th className="border border-white px-4 py-2">Age</th>
-                                <th className="border border-white px-4 py-2">Gender</th>
-                                <th className="border border-white px-4 py-2">Delete option</th>
+                    <Table className="border-collapse  ml-9">
+                        <TableHeader>
+                            <TableRow>
+                                <TableHead className=" px-4 py-2">ID</TableHead>
+                                <TableHead className=" px-4 py-2">Name</TableHead>
+                                <TableHead className=" px-4 py-2">Age</TableHead>
+                                <TableHead className=" px-4 py-2">Gender</TableHead>
+                                <TableHead className=" px-4 py-2">Delete option</TableHead>
                                 {/* <th className="border border-white px-4 py-2">Edit option</th> */}
-                            </tr>
-                        </thead>
+                            </TableRow>
+                        </TableHeader>
 
-                        <tbody>
+                        <TableBody>
                             {students.map((student) => (
-                                <tr
+                                <TableRow
                                     key={student.id}
-                                    className="cursor-pointer hover:bg-gray-800"
+                                    className="cursor-pointer hover:bg-gray-200"
                                     onClick={() => openDrawer(student)}
                                 >
-                                    <td className="border border-white px-4 py-2">
+                                    <TableCell className="px-4 py-2">
                                         {student.id}
-                                    </td>
-                                    <td className="border border-white px-4 py-2">
+                                    </TableCell>
+                                    <TableCell className="px-4 py-2">
                                         {student.name}
-                                    </td>
-                                    <td className="border border-white px-4 py-2">{student.age}</td>
-                                    <td className="border border-white px-4 py-2">{student.gender}</td>
+                                    </TableCell>
+                                    <TableCell className="px-4 py-2">{student.age}</TableCell>
+                                    <TableCell className="px-4 py-2">{student.gender}</TableCell>
 
-                                    <td className="border border-white px-4 py-2">
-                                        <div className="flex justify-center">
-                                            <button
-                                                className="bg-sky-400 text-black px-3 py-1"
+                                    <TableCell className="px-4 py-2">
+                                        <div className="">
+                                            <Button
+                                                className="px-3 py-1"
                                                 onClick={(e) => {
                                                     e.stopPropagation();
                                                     deleteStudent(student.id);
                                                 }}
                                             >
                                                 Delete
-                                            </button>
+                                            </Button>
                                         </div>
-                                    </td>
-                                    {/* <td className="border border-white px-4 py-2">
+                                    </TableCell>
+                                    {/* <TableCell className="border border-white px-4 py-2">
                                         <div className="flex justify-center">
                                             <button
                                                 className="bg-yellow-400 text-black px-3 py-1"
@@ -356,38 +384,38 @@ export default function Home() {
                                             </button>
                                         </div>
                                     </td> */}
-                                </tr>
+                                </TableRow>
                             ))}
-                        </tbody>
-                    </table>
-                    <div className="flex gap-2 mt-4 ml-5">
+                        </TableBody>
+                    </Table>
+                    <div className="flex justify-center gap-2 mt-4 ml-5">
 
-                        <button
+                        <Button
                             disabled={page === 1}
                             onClick={() => setPage(page - 1)}
                             className="border px-3 py-1"
                         >
                             Previous
-                        </button>
+                        </Button>
 
                         {Array.from({ length: totalPages }, (_, i) => (
-                            <button
+                            <Button
                                 key={i + 1}
                                 onClick={() => setPage(i + 1)}
-                                className={`border px-3 py-1 ${page === i + 1 ? "bg-blue-500" : ""
+                                className={`border px-3 py-1 ${page === i + 1 ? "bg-gray-500" : ""
                                     }`}
                             >
                                 {i + 1}
-                            </button>
+                            </Button>
                         ))}
 
-                        <button
+                        <Button
                             disabled={page === totalPages}
                             onClick={() => setPage(page + 1)}
                             className="border px-3 py-1"
                         >
                             Next
-                        </button>
+                        </Button>
 
                     </div>
 
@@ -405,7 +433,7 @@ export default function Home() {
                             Student ID
                         </label>
 
-                        <input
+                        <Input
                             value={selectedStudent?.id || ""}
                             disabled
                             className="border p-2 w-full mb-4"
@@ -415,7 +443,7 @@ export default function Home() {
                             Name
                         </label>
 
-                        <input
+                        <Input
                             value={editName}
                             disabled={!isEditing}
                             onChange={(e) => setEditName(e.target.value)}
@@ -426,7 +454,7 @@ export default function Home() {
                             Age
                         </label>
 
-                        <input
+                        <Input
                             value={editAge || ""}
                             disabled={!isEditing}
                             onChange={(e) => setEditAge(e.target.value)}
@@ -437,36 +465,40 @@ export default function Home() {
                             Gender
                         </label>
 
-                        <select
+                        <Select
                             value={editGender || ""}
+                            onValueChange={(value) => setEditGender(value)}
                             disabled={!isEditing}
-                            onChange={(e) => setEditGender(e.target.value)}
-                            className="border p-2 w-full mb-6"
                         >
-                            <option value="">Select Gender</option>
-                            <option value="Male">Male</option>
-                            <option value="Female">Female</option>
-                        </select>
+                            <SelectTrigger className="w-full mb-6">
+                                <SelectValue placeholder="Select Gender" />
+                            </SelectTrigger>
+
+                            <SelectContent>
+                                <SelectItem value="Male">Male</SelectItem>
+                                <SelectItem value="Female">Female</SelectItem>
+                            </SelectContent>
+                        </Select>
 
                         <div className="flex gap-3">
 
                             {!isEditing ? (
-                                <button
+                                <Button
                                     onClick={() => setIsEditing(true)}
                                     className="bg-yellow-500 text-white px-4 py-2"
                                 >
                                     Edit
-                                </button>
+                                </Button>
                             ) : (
-                                <button
+                                <Button
                                     onClick={saveChanges}
                                     className="bg-green-500 text-white px-4 py-2"
                                 >
                                     Save Changes
-                                </button>
+                                </Button>
                             )}
 
-                            <button
+                            <Button
                                 onClick={() => {
                                     setIsDrawerOpen(false);
                                     setIsEditing(false);
@@ -474,7 +506,7 @@ export default function Home() {
                                 className="bg-red-500 text-white px-4 py-2"
                             >
                                 Close
-                            </button>
+                            </Button>
 
                         </div>
                     </div>
