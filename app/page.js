@@ -32,6 +32,10 @@ export default function Home() {
 
     const [successMessage, setSuccessMessage] = useState("");
 
+    const [page, setPage] = useState(1);
+
+    const [totalPages, setTotalPages] = useState(1);
+
     useEffect(() => {
         async function checkConnection() {
             const { data, error } = await supabase
@@ -49,22 +53,35 @@ export default function Home() {
         checkConnection();
     }, []);
 
+    // useEffect(() => {
+    //     getStudents();
+    // }, []);
+
     useEffect(() => {
-        getStudents();
-    }, []);
+        getStudents(page);
+    }, [page]);
 
-    async function getStudents() {
-        const { data, error } = await supabase
-            .from("students")
-            .select("*")
-            .order("id", { ascending: true });
+    async function getStudents(pageNumber = 1) {
+        // const { data, error } = await supabase
+        //     .from("students")
+        //     .select("*")
+        //     .order("id", { ascending: true });
 
-        console.log(data);
-        if (error) {
-            console.log(error);
-        } else {
-            setStudent(data);
-        }
+        const res = await fetch(
+            `/api/students?page=${pageNumber}`
+        );
+
+        const result = await res.json();
+
+        setStudent(result.students);
+        setTotalPages(result.totalPages);
+
+        // console.log(data);
+        // if (error) {
+        //     console.log(error);
+        // } else {
+        //     setStudent(data);
+        // }
     }
 
 
@@ -208,7 +225,9 @@ export default function Home() {
         <div>
             {/* <h1>Check Console (F12)</h1> */}
             <h1 className="text-2xl flex justify-center items-center p-4">Student Home page</h1>
-            <Link href="/students">
+            <br />
+            <br />
+            {/* <Link href="/students">
 
                 <h2 className="text-2xl text-blue-400 cursor-pointer hover:text-blue-600 p-4">
                     Students
@@ -228,7 +247,7 @@ export default function Home() {
                     School Buses
                 </h2>
 
-            </Link>
+            </Link> */}
             <div>
                 {/* <input className="h-12 px-3 border-1 mr-2 ml-2"
                     type="text"
@@ -337,6 +356,39 @@ export default function Home() {
                             ))}
                         </tbody>
                     </table>
+                    <div className="flex gap-2 mt-4 ml-5">
+
+                        <button
+                            disabled={page === 1}
+                            onClick={() => setPage(page - 1)}
+                            className="border px-3 py-1"
+                        >
+                            Previous
+                        </button>
+
+                        {Array.from({ length: totalPages }, (_, i) => (
+                            <button
+                                key={i + 1}
+                                onClick={() => setPage(i + 1)}
+                                className={`border px-3 py-1 ${page === i + 1 ? "bg-blue-500" : ""
+                                    }`}
+                            >
+                                {i + 1}
+                            </button>
+                        ))}
+
+                        <button
+                            disabled={page === totalPages}
+                            onClick={() => setPage(page + 1)}
+                            className="border px-3 py-1"
+                        >
+                            Next
+                        </button>
+
+                    </div>
+
+
+
                 </div>
                 {isDrawerOpen && (
                     <div className="fixed top-0 right-0 h-screen w-96 bg-white text-black shadow-2xl p-6">
