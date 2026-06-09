@@ -74,6 +74,18 @@ export default function Home() {
 
     const [addDialogOpen, setAddDialogOpen] = useState(false);
 
+    const [nameError, setNameError] = useState("");
+
+    const [ageError, setAgeError] = useState("");
+
+    const [genderError, setGenderError] = useState("");
+
+    const [EditNameError,setEditNameError] = useState("");
+
+    const [EditAgeError,setEditAgeError] = useState("");
+
+    const [EditGenderError,setEditGenderError] = useState("");
+
     useEffect(() => {
         async function checkConnection() {
             const { data, error } = await supabase
@@ -153,6 +165,15 @@ export default function Home() {
     const addStudent1 = async () => {
         if (input.trim() === "") return;
 
+        if (
+            input.trim() === "" ||
+            age === "" ||
+            Number(age) < 15 ||
+            !gender
+        ) {
+            return;
+        }
+
         setLoading(true);
 
         const { data, error } = await supabase
@@ -185,6 +206,38 @@ export default function Home() {
             setSuccessMessage("");
         }, 3000);
     };
+
+    const validateAddStudent = () => {
+        let isValid = true;
+
+        setNameError("");
+        setAgeError("");
+        setGenderError("");
+
+        if (input.trim() === "") {
+            setNameError("Name is required");
+            isValid = false;
+        }
+
+        if (age === "") {
+            setAgeError("Age is required");
+            isValid = false;
+        }
+        else if (Number(age) < 15) {
+            setAgeError("Age must be greater than 15");
+            isValid = false;
+        }
+
+        if (!gender) {
+            setGenderError("Please select gender");
+            isValid = false
+        }
+        if (isValid) {
+            setAddDialogOpen(true);
+        }
+    };
+
+
     const openDrawer = (student) => {
         setSelectedStudent(student);
 
@@ -199,6 +252,26 @@ export default function Home() {
     };
 
     const saveChanges = async () => {
+
+        if (editName.trim() === "") {
+            setEditNameError("Name is required");
+            return;
+        }
+
+        if (editAge === "") {
+            setEditAgeError("Age is required");
+            return;
+        }
+
+        if (Number(editAge) < 15) {
+            setEditAgeError("Age must be greater than or equal to 15");
+            return;
+        }
+
+        if (!editGender) {
+            setEditGenderError("Please select gender");
+            return;
+        }
         setLoading(true);
 
         const { error } = await supabase
@@ -338,7 +411,7 @@ export default function Home() {
                             </DropdownMenuItem>
                         </DropdownMenuContent>
                     </DropdownMenu> */}
-        
+
                     <Button
                         onClick={() => setIsAddDrawerOpen(true)}
                         className=" mt-1 py-4 px-8"
@@ -362,7 +435,7 @@ export default function Home() {
                 <br />
                 <h1 className="ml-9">Students List</h1>
                 <div className=" ml-9 mr-9  flex justify-center overflow-x-hidden overscroll-x-none">
-                    
+
 
                     <Table className="w-full table-fixed ">
                         <TableHeader>
@@ -462,15 +535,29 @@ export default function Home() {
                         <Input
                             placeholder="Enter Name"
                             value={input}
-                            onChange={(e) => setInput(e.target.value)}
+                            onChange={(e) => {setInput(e.target.value);
+                                              setNameError("");
+                            }}
                         />
+                        {nameError && (
+                            <p className="text-red-500 text-sm mt-1">
+                                {nameError}
+                            </p>
 
+                        )}
                         <Input
                             className="mt-4"
                             placeholder="Enter Age"
                             value={age}
-                            onChange={(e) => setAge(e.target.value)}
+                            onChange={(e) =>{ setAge(e.target.value);
+                                              setAgeError("");
+                            }}
                         />
+                        {ageError && (
+                            <p className="text-red-500 text-sm mt-1">
+                                {ageError}
+                            </p>
+                        )}
 
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
@@ -484,22 +571,31 @@ export default function Home() {
 
                             <DropdownMenuContent>
                                 <DropdownMenuItem
-                                    onClick={() => setGender("Male")}
+                                    onClick={() => {setGender("Male");
+                                                    setGenderError("");
+                                    }}
                                 >
                                     Male
                                 </DropdownMenuItem>
 
                                 <DropdownMenuItem
-                                    onClick={() => setGender("Female")}
+                                    onClick={() => {setGender("Female");
+                                                    setGenderError("");
+                                    }}
                                 >
                                     Female
                                 </DropdownMenuItem>
                             </DropdownMenuContent>
                         </DropdownMenu>
+                        {genderError && (
+                            <p className="text-red-500 text-sm mt-1">
+                                {genderError}
+                            </p>
+                        )}
 
                         <div className="flex gap-2 mt-6">
                             <Button
-                                onClick={() => setAddDialogOpen(true)}
+                                onClick={validateAddStudent}
                             >
                                 Add Student
                             </Button>
@@ -541,9 +637,17 @@ export default function Home() {
                         <Input
                             value={editName}
                             disabled={!isEditing}
-                            onChange={(e) => setEditName(e.target.value)}
+                            onChange={(e) => {setEditName(e.target.value);
+                                              setEditNameError("");
+                            }}
                             className="border p-2 w-full mb-6"
                         />
+                         {EditNameError && (
+                            <p className="text-red-500 text-sm mt-1">
+                                {EditNameError}
+                            </p>
+
+                        )}
 
                         <label className="block mb-2">
                             Age
@@ -552,9 +656,17 @@ export default function Home() {
                         <Input
                             value={editAge || ""}
                             disabled={!isEditing}
-                            onChange={(e) => setEditAge(e.target.value)}
+                            onChange={(e) => {setEditAge(e.target.value);
+                                              setEditAgeError("");
+                            }}
                             className="border p-2 w-full mb-4"
                         />
+                         {EditAgeError && (
+                            <p className="text-red-500 text-sm mt-1">
+                                {EditAgeError}
+                            </p>
+
+                        )}
 
                         <label className="block mb-2">
                             Gender
@@ -572,17 +684,27 @@ export default function Home() {
                             </DropdownMenuTrigger>
                             <DropdownMenuContent className="w-full">
                                 <DropdownMenuItem
-                                    onClick={() => setEditGender("Male")}
+                                    onClick={() => {setEditGender("Male");
+                                                    setEditGenderError("");
+                                    }}
                                 >
                                     Male
                                 </DropdownMenuItem>
                                 <DropdownMenuItem
-                                    onClick={() => setEditGender("Female")}
+                                    onClick={() => {setEditGender("Female");
+                                                    setEditGenderError("");
+                                    }}
                                 >
                                     Female
                                 </DropdownMenuItem>
                             </DropdownMenuContent>
                         </DropdownMenu>
+                        {EditGenderError && (
+                            <p className="text-red-500 text-sm mt-1">
+                                {EditGenderError}
+                            </p>
+
+                        )}
 
                         <div className="flex gap-3">
 
