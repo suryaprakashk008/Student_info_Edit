@@ -29,6 +29,15 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+} from "@/components/ui/dialog";
+
 export default function Home() {
 
     const [input, setInput] = useState("");
@@ -59,6 +68,12 @@ export default function Home() {
 
     const [totalPages, setTotalPages] = useState(1);
 
+    const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+
+    const [isAddDrawerOpen, setIsAddDrawerOpen] = useState(false);
+
+    const [addDialogOpen, setAddDialogOpen] = useState(false);
+
     useEffect(() => {
         async function checkConnection() {
             const { data, error } = await supabase
@@ -81,6 +96,8 @@ export default function Home() {
     // }, []);
 
     useEffect(() => {
+        //  console.log(document.documentElement.scrollWidth===window.innerWidth);
+
         getStudents(page);
     }, [page]);
 
@@ -199,7 +216,7 @@ export default function Home() {
             return;
         }
 
-        await getStudents();
+        await getStudents(page);
 
         setLoading(false);
 
@@ -232,20 +249,26 @@ export default function Home() {
             return;
         }
 
-        await getStudents();
+        await getStudents(page);
 
         setSuccessMessage("Student Deleted Successfully 🗑️");
 
         setTimeout(() => {
             setSuccessMessage("");
         }, 3000);
+        setIsDrawerOpen(false);
+        setSelectedStudent(null);
+        setEditName("");
+        setEditAge("");
+        setEditGender("");
+        setIsEditing(false);
     };
 
 
     return (
 
 
-        <div>
+        <div className="overflow-x-hidden overscroll-x-none ">
             {/* <h1>Check Console (F12)</h1> */}
 
             <h1 className="text-2xl flex justify-center items-center p-4">Student Home page</h1>
@@ -273,14 +296,14 @@ export default function Home() {
 
             </Link> */}
             <div>
-                <div className="flex justify-center">
+                <div className="mr-9 flex justify-end">
                     {/* <input className="h-12 px-3 border-1 mr-2 ml-2"
                     type="text"
                     placeholder="Enter the name"
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
                 /> */}
-                    <Input
+                    {/* <Input
                         className="w-74 mr-2 ml-2 p-5"
                         type="text"
                         placeholder="Enter name"
@@ -296,21 +319,28 @@ export default function Home() {
                         onChange={(e) => setAge(e.target.value)}
                     />
 
-                    <Select
-                        value={gender}
-                        onValueChange={(value) => setGender(value)}
-                    >
-                        <SelectTrigger className="w-[180px] p-5 mr-3">
-                            <SelectValue placeholder="Gender" />
-                        </SelectTrigger>
-
-                        <SelectContent>
-                            <SelectItem value="Male">Male</SelectItem>
-                            <SelectItem value="Female">Female</SelectItem>
-                        </SelectContent>
-                    </Select>
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <Button className="mt-1 mr-2" variant="outline">
+                                {gender || "Gender"}
+                            </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent>
+                            <DropdownMenuItem
+                            onClick={()=>setGender("Male")}
+                            >
+                             Male
+                            </DropdownMenuItem>
+                            <DropdownMenuItem
+                            onClick={()=>setGender("Female")}
+                            >
+                             Female
+                            </DropdownMenuItem>
+                        </DropdownMenuContent>
+                    </DropdownMenu> */}
+        
                     <Button
-                        onClick={addStudent1}
+                        onClick={() => setIsAddDrawerOpen(true)}
                         className=" mt-1 py-4 px-8"
                     >
                         Add
@@ -330,18 +360,19 @@ export default function Home() {
                 </Link> */}
                 <br />
                 <br />
-                <div>
-                    <h1 className="ml-9">Students List</h1>
+                <h1 className="ml-9">Students List</h1>
+                <div className=" ml-9 mr-9  flex justify-center overflow-x-hidden overscroll-x-none">
+                    
 
-                    <Table className="border-collapse  ml-9">
+                    <Table className="w-full table-fixed ">
                         <TableHeader>
                             <TableRow>
-                                <TableHead className=" px-4 py-2">ID</TableHead>
-                                <TableHead className=" px-4 py-2">Name</TableHead>
-                                <TableHead className=" px-4 py-2">Age</TableHead>
-                                <TableHead className=" px-4 py-2">Gender</TableHead>
-                                <TableHead className=" px-4 py-2">Delete option</TableHead>
-                                {/* <th className="border border-white px-4 py-2">Edit option</th> */}
+                                <TableHead className=" ">ID</TableHead>
+                                <TableHead className=" ">Name</TableHead>
+                                <TableHead className=" ">Age</TableHead>
+                                <TableHead className=" ">Gender</TableHead>
+                                {/* <TableHead className=" ">Delete option</TableHead> */}
+                                {/* <th className="border border-white ">Edit option</th> */}
                             </TableRow>
                         </TableHeader>
 
@@ -352,16 +383,16 @@ export default function Home() {
                                     className="cursor-pointer hover:bg-gray-200"
                                     onClick={() => openDrawer(student)}
                                 >
-                                    <TableCell className="px-4 py-2">
+                                    <TableCell className="">
                                         {student.id}
                                     </TableCell>
-                                    <TableCell className="px-4 py-2">
+                                    <TableCell className="">
                                         {student.name}
                                     </TableCell>
-                                    <TableCell className="px-4 py-2">{student.age}</TableCell>
-                                    <TableCell className="px-4 py-2">{student.gender}</TableCell>
+                                    <TableCell className="">{student.age}</TableCell>
+                                    <TableCell className="">{student.gender}</TableCell>
 
-                                    <TableCell className="px-4 py-2">
+                                    {/* <TableCell className="">
                                         <div className="">
                                             <Button
                                                 className="px-3 py-1"
@@ -373,7 +404,7 @@ export default function Home() {
                                                 Delete
                                             </Button>
                                         </div>
-                                    </TableCell>
+                                    </TableCell> */}
                                     {/* <TableCell className="border border-white px-4 py-2">
                                         <div className="flex justify-center">
                                             <button
@@ -388,40 +419,104 @@ export default function Home() {
                             ))}
                         </TableBody>
                     </Table>
-                    <div className="flex justify-center gap-2 mt-4 ml-5">
+                </div>
 
+                <div className="flex justify-center gap-2 mt-4 ml-5">
+
+                    <Button
+                        disabled={page === 1}
+                        onClick={() => setPage(page - 1)}
+                        className="border px-3 py-1"
+                    >
+                        Previous
+                    </Button>
+
+                    {Array.from({ length: totalPages }, (_, i) => (
                         <Button
-                            disabled={page === 1}
-                            onClick={() => setPage(page - 1)}
-                            className="border px-3 py-1"
+                            key={i + 1}
+                            onClick={() => setPage(i + 1)}
+                            className={`border px-3 py-1 ${page === i + 1 ? "bg-gray-500" : ""
+                                }`}
                         >
-                            Previous
+                            {i + 1}
                         </Button>
+                    ))}
 
-                        {Array.from({ length: totalPages }, (_, i) => (
-                            <Button
-                                key={i + 1}
-                                onClick={() => setPage(i + 1)}
-                                className={`border px-3 py-1 ${page === i + 1 ? "bg-gray-500" : ""
-                                    }`}
-                            >
-                                {i + 1}
-                            </Button>
-                        ))}
-
-                        <Button
-                            disabled={page === totalPages}
-                            onClick={() => setPage(page + 1)}
-                            className="border px-3 py-1"
-                        >
-                            Next
-                        </Button>
-
-                    </div>
-
-
+                    <Button
+                        disabled={page === totalPages}
+                        onClick={() => setPage(page + 1)}
+                        className="border px-3 py-1"
+                    >
+                        Next
+                    </Button>
 
                 </div>
+
+                {isAddDrawerOpen && (
+                    <div className="fixed top-0 right-0 h-screen w-96 bg-white text-black shadow-2xl p-6">
+
+                        <h2 className="text-2xl font-bold mb-6">
+                            Add Student
+                        </h2>
+
+                        <Input
+                            placeholder="Enter Name"
+                            value={input}
+                            onChange={(e) => setInput(e.target.value)}
+                        />
+
+                        <Input
+                            className="mt-4"
+                            placeholder="Enter Age"
+                            value={age}
+                            onChange={(e) => setAge(e.target.value)}
+                        />
+
+                        <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                                <Button
+                                    variant="outline"
+                                    className="w-full mt-4 justify-start"
+                                >
+                                    {gender || "Select Gender"}
+                                </Button>
+                            </DropdownMenuTrigger>
+
+                            <DropdownMenuContent>
+                                <DropdownMenuItem
+                                    onClick={() => setGender("Male")}
+                                >
+                                    Male
+                                </DropdownMenuItem>
+
+                                <DropdownMenuItem
+                                    onClick={() => setGender("Female")}
+                                >
+                                    Female
+                                </DropdownMenuItem>
+                            </DropdownMenuContent>
+                        </DropdownMenu>
+
+                        <div className="flex gap-2 mt-6">
+                            <Button
+                                onClick={() => setAddDialogOpen(true)}
+                            >
+                                Add Student
+                            </Button>
+
+                            <Button
+                                variant="destructive"
+                                onClick={() => setIsAddDrawerOpen(false)}
+                            >
+                                Close
+                            </Button>
+                        </div>
+
+                    </div>
+                )}
+
+
+
                 {isDrawerOpen && (
                     <div className="fixed top-0 right-0 h-screen w-96 bg-white text-black shadow-2xl p-6">
 
@@ -465,20 +560,29 @@ export default function Home() {
                             Gender
                         </label>
 
-                        <Select
-                            value={editGender || ""}
-                            onValueChange={(value) => setEditGender(value)}
-                            disabled={!isEditing}
-                        >
-                            <SelectTrigger className="w-full mb-6">
-                                <SelectValue placeholder="Select Gender" />
-                            </SelectTrigger>
-
-                            <SelectContent>
-                                <SelectItem value="Male">Male</SelectItem>
-                                <SelectItem value="Female">Female</SelectItem>
-                            </SelectContent>
-                        </Select>
+                        <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                                <Button
+                                    variant="outline"
+                                    disabled={!isEditing}
+                                    className="w-full mb-6 justify-start"
+                                >
+                                    {editGender || "Select Gender"}
+                                </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent className="w-full">
+                                <DropdownMenuItem
+                                    onClick={() => setEditGender("Male")}
+                                >
+                                    Male
+                                </DropdownMenuItem>
+                                <DropdownMenuItem
+                                    onClick={() => setEditGender("Female")}
+                                >
+                                    Female
+                                </DropdownMenuItem>
+                            </DropdownMenuContent>
+                        </DropdownMenu>
 
                         <div className="flex gap-3">
 
@@ -490,12 +594,22 @@ export default function Home() {
                                     Edit
                                 </Button>
                             ) : (
-                                <Button
-                                    onClick={saveChanges}
-                                    className="bg-green-500 text-white px-4 py-2"
-                                >
-                                    Save Changes
-                                </Button>
+                                <>
+                                    <Button
+                                        onClick={saveChanges}
+                                        className="bg-green-500 text-white px-4 py-2"
+                                    >
+                                        Save Changes
+                                    </Button>
+                                    <Button
+                                        //onClick={() => deleteStudent(selectedStudent.id)
+                                        onClick={() => setDeleteDialogOpen(true)}
+
+                                        className="bg-red-500 text-white px-4 py-2"
+                                    >
+                                        Delete
+                                    </Button>
+                                </>
                             )}
 
                             <Button
@@ -511,6 +625,79 @@ export default function Home() {
                         </div>
                     </div>
                 )}
+
+                <Dialog
+                    open={addDialogOpen}
+                    onOpenChange={setAddDialogOpen}
+                >
+                    <DialogContent>
+
+                        <DialogHeader>
+                            <DialogTitle>
+                                Add Student?
+                            </DialogTitle>
+
+                            <DialogDescription>
+                                Are you sure you want to add this student?
+                            </DialogDescription>
+                        </DialogHeader>
+
+                        <DialogFooter>
+
+                            <Button
+                                variant="outline"
+                                onClick={() => setAddDialogOpen(false)}
+                            >
+                                No
+                            </Button>
+
+                            <Button
+                                onClick={async () => {
+                                    await addStudent1();
+                                    setAddDialogOpen(false);
+                                    setIsAddDrawerOpen(false);
+                                }}
+                            >
+                                Yes
+                            </Button>
+
+                        </DialogFooter>
+
+                    </DialogContent>
+                </Dialog>
+                <Dialog
+                    open={deleteDialogOpen}
+                    onOpenChange={setDeleteDialogOpen}
+                >
+                    <DialogContent>
+                        <DialogHeader>
+                            <DialogTitle>
+                                Are you sure?
+                            </DialogTitle>
+                            <DialogDescription>
+                                Do you really want to delete this student?
+                            </DialogDescription>
+                        </DialogHeader>
+                        <DialogFooter>
+                            <Button
+                                variant="outline"
+                                onClick={() => setDeleteDialogOpen(false)}
+                            >
+                                No
+                            </Button>
+                            <Button
+                                variant="destructive"
+                                onClick={() => {
+                                    deleteStudent(selectedStudent.id);
+                                    setDeleteDialogOpen(false);
+                                }}
+                            >
+                                Yes
+                            </Button>
+                        </DialogFooter>
+                    </DialogContent>
+
+                </Dialog>
                 {loading && (
                     <div
                         className="fixed top-0 left-0 w-screen h-screen z-[9999]
