@@ -454,6 +454,7 @@ export default function Home() {
                                 <TableHead className=" ">Name</TableHead>
                                 <TableHead className=" ">Age</TableHead>
                                 <TableHead className=" ">Gender</TableHead>
+                                 <TableHead className=" ">E-mail</TableHead>
                                 {/* <th className="border border-white ">Edit option</th> */}
                             </TableRow>
                         </TableHeader>
