@@ -363,13 +363,7 @@ export default function Home() {
             <h1 className="text-2xl flex justify-center items-center p-4">Student Home page</h1>
             <br />
             <br />
-            {/* <Link href="/students">
-
-                <h2 className="text-2xl text-blue-400 cursor-pointer hover:text-blue-600 p-4">
-                    Students
-                </h2>
-
-            </Link>
+            {/* 
             <Link href="/teachers">
 
                 <h2 className="text-2xl text-blue-400 cursor-pointer hover:text-blue-600 p-4">
@@ -450,17 +444,16 @@ export default function Home() {
                 <br />
                 <br />
                 <h1 className="">Students List</h1>
-                <div className=" overflow-x-hidden ">
+                <div className="overflow-x-auto sm:overflow-x-hidden lg:overflow-x-hidden ">
 
 
-                    <Table className="w-full table-fixed ">
+                    <Table className=" w-full lg:table-fixed sm:table-fixed">
                         <TableHeader>
                             <TableRow>
                                 <TableHead className=" ">ID</TableHead>
                                 <TableHead className=" ">Name</TableHead>
                                 <TableHead className=" ">Age</TableHead>
                                 <TableHead className=" ">Gender</TableHead>
-                                {/* <TableHead className=" ">Delete option</TableHead> */}
                                 {/* <th className="border border-white ">Edit option</th> */}
                             </TableRow>
                         </TableHeader>
@@ -901,7 +894,13 @@ export default function Home() {
                     <footer className="mt-8 text-center">Footer</footer>
                 </div>
             </div>
+             {/* <Link href="/students">
 
+                <h2 className="text-2xl text-blue-400 cursor-pointer hover:text-blue-600 p-4">
+                    Responsive Design
+                </h2>
+
+            </Link> */}
 
 
         </div>
