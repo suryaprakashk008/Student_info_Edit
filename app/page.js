@@ -449,8 +449,8 @@ export default function Home() {
                 </Link> */}
                 <br />
                 <br />
-                <h1 className="px-4">Students List</h1>
-                <div className="px-4 overflow-x-hidden ">
+                <h1 className="">Students List</h1>
+                <div className=" overflow-x-hidden ">
 
 
                     <Table className="w-full table-fixed ">
