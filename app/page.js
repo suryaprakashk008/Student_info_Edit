@@ -385,7 +385,7 @@ export default function Home() {
 
             </Link> */}
             <div>
-                <div className="mr-9 flex justify-end">
+                <div className="px-4 flex justify-end">
                     {/* <input className="h-12 px-3 border-1 mr-2 ml-2"
                     type="text"
                     placeholder="Enter the name"
@@ -449,8 +449,8 @@ export default function Home() {
                 </Link> */}
                 <br />
                 <br />
-                <h1 className="ml-9">Students List</h1>
-                <div className=" ml-9 mr-9  flex justify-center overflow-x-hidden overscroll-x-none">
+                <h1 className="px-4">Students List</h1>
+                <div className="px-4 overflow-x-hidden ">
 
 
                     <Table className="w-full table-fixed ">
@@ -510,7 +510,7 @@ export default function Home() {
                     </Table>
                 </div>
 
-                <div className="flex justify-center gap-2 mt-4 ml-5">
+                <div className="flex flex-wrap justify-center gap-2 mt-4">
 
                     <Button
                         disabled={page === 1}
@@ -542,7 +542,7 @@ export default function Home() {
                 </div>
 
                 {isAddDrawerOpen && (
-                    <div className="fixed top-0 right-0 h-screen w-96 bg-white text-black shadow-2xl p-6">
+                    <div className="fixed top-0 right-0 h-screen w-full sm:w-96 bg-white p-6  overflow-y-auto">
 
                         <h2 className="text-2xl font-bold mb-6">
                             Add Student
@@ -634,7 +634,7 @@ export default function Home() {
 
 
                 {isDrawerOpen && (
-                    <div className="fixed top-0 right-0 h-screen w-96 bg-white text-black shadow-2xl p-6">
+                    <div className="fixed top-0 right-0 h-screen w-full sm:w-96 bg-white p-6  overflow-y-auto">
 
                         <h2 className="text-2xl font-bold mb-6">
                             Edit Student
@@ -893,12 +893,12 @@ export default function Home() {
                     </div>
                 )}
                 {successMessage && (
-                    <div className="fixed top-5 right-5 bg-green-500 text-white px-6 py-3 rounded shadow-lg z-50">
+                    <div className="fixed top-5 right-2 left-2 sm:left-auto sm:right-5 bg-green-500 text-white px-6 py-3 rounded shadow-lg z-50">
                         {successMessage}
                     </div>
                 )}
                 <div>
-                    <footer className="mt-30">Footer</footer>
+                    <footer className="mt-8 text-center">Footer</footer>
                 </div>
             </div>
 
