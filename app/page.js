@@ -454,7 +454,7 @@ export default function Home() {
                                 <TableHead className=" ">Name</TableHead>
                                 <TableHead className=" ">Age</TableHead>
                                 <TableHead className=" ">Gender</TableHead>
-                                 <TableHead className=" ">E-mail</TableHead>
+                                 <TableHead className=" ">E-mail(notification)</TableHead>
                                 {/* <th className="border border-white ">Edit option</th> */}
                             </TableRow>
                         </TableHeader>
@@ -895,13 +895,13 @@ export default function Home() {
                     <footer className="mt-8 text-center">Footer</footer>
                 </div>
             </div>
-             <Link href="/students">
+             {/* <Link href="/students">
 
                 <h2 className="text-2xl text-blue-400 cursor-pointer hover:text-blue-600 p-4">
                     Responsive Design
                 </h2>
 
-            </Link>
+            </Link> */}
 
 
         </div>
