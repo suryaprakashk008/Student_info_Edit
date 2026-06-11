@@ -88,6 +88,10 @@ export default function Home() {
 
     const [EditGenderError, setEditGenderError] = useState("");
 
+    const [isMobile, setIsMobile] = useState(false);
+
+    const [pageInput, setPageInput] = useState("1");
+
     useEffect(() => {
         async function checkConnection() {
             const { data, error } = await supabase
@@ -113,22 +117,45 @@ export default function Home() {
         //  console.log(document.documentElement.scrollWidth===window.innerWidth);
 
         getStudents(page);
+    }, [page, isMobile]);
+
+    useEffect(() => {
+        const checkScreen = () => {
+            setIsMobile(window.innerWidth < 640);
+        };
+
+        checkScreen();
+
+        window.addEventListener("resize", checkScreen);
+
+        return () =>
+            window.removeEventListener("resize", checkScreen);
+    }, []);
+
+    useEffect(() => {
+        setPageInput(page.toString());
     }, [page]);
+
+    
 
     async function getStudents(pageNumber = 1) {
         // const { data, error } = await supabase
         //     .from("students")
         //     .select("*")
         //     .order("id", { ascending: true });
+         
+
+        const limit = isMobile ? 4 : 10;
 
         const res = await fetch(
-            `/api/students?page=${pageNumber}`
+            `/api/students?page=${pageNumber}&limit=${limit}`
         );
 
         const result = await res.json();
 
         setStudent(result.students);
         setTotalPages(result.totalPages);
+        
 
         // console.log(data);
         // if (error) {
@@ -444,7 +471,43 @@ export default function Home() {
                 <br />
                 <br />
                 <h1 className="">Students List</h1>
-                <div className="overflow-x-auto sm:overflow-x-hidden lg:overflow-x-hidden ">
+
+                <div className="block sm:hidden">
+                    <div className="grid grid-cols-1 gap-4">
+
+                        {students.map((student) => (
+                            <div
+                                key={student.id}
+                                onClick={() => openDrawer(student)}
+                                className="
+                                             border
+                                             rounded-lg
+                                             p-4
+                                             shadow-md
+                                             cursor-pointer
+                                             hover:bg-gray-100
+                                            "
+                            >
+                                <p>
+                                    <strong>Name:</strong> {student.name}
+                                </p>
+
+                                <p>
+                                    <strong>Age:</strong> {student.age}
+                                </p>
+
+                                <p>
+                                    <strong>Gender:</strong> {student.gender}
+                                </p>
+                            </div>
+                        ))}
+
+                    </div>
+                </div>
+
+
+                <div className="hidden sm:block overflow-x-auto">
+
 
 
                     <Table className=" w-full lg:table-fixed sm:table-fixed">
@@ -454,7 +517,7 @@ export default function Home() {
                                 <TableHead className=" ">Name</TableHead>
                                 <TableHead className=" ">Age</TableHead>
                                 <TableHead className=" ">Gender</TableHead>
-                                 <TableHead className=" ">E-mail(notification)</TableHead>
+
                                 {/* <th className="border border-white ">Edit option</th> */}
                             </TableRow>
                         </TableHeader>
@@ -504,7 +567,45 @@ export default function Home() {
                     </Table>
                 </div>
 
-                <div className="flex flex-wrap justify-center gap-2 mt-4">
+                <div className="flex sm:hidden justify-center items-center gap-2 mt-4">
+
+                    <Button
+                        disabled={page === 1}
+                        onClick={() => setPage(page - 1)}
+                    >
+                        Prev
+                    </Button>
+
+                    <Input
+                        value={pageInput}
+                        onChange={(e) => setPageInput(e.target.value)}
+                        onKeyDown={(e) => {
+                            if (e.key === "Enter") {
+                                const pageNumber = Number(pageInput);
+
+                                if (
+                                    pageNumber >= 1 &&
+                                    pageNumber <= totalPages
+                                ) {
+                                    setPage(pageNumber);
+                                }
+                            }
+                        }}
+                        className="w-16 text-center"
+                    />
+
+                    <span>/ {totalPages}</span>
+
+                    <Button
+                        disabled={page === totalPages}
+                        onClick={() => setPage(page + 1)}
+                    >
+                        Next
+                    </Button>
+
+                </div>
+
+                <div className="hidden sm:flex flex-wrap justify-center gap-2 mt-4">
 
                     <Button
                         disabled={page === 1}
@@ -895,7 +996,7 @@ export default function Home() {
                     <footer className="mt-8 text-center">Footer</footer>
                 </div>
             </div>
-             {/* <Link href="/students">
+            {/* <Link href="/students">
 
                 <h2 className="text-2xl text-blue-400 cursor-pointer hover:text-blue-600 p-4">
                     Responsive Design
