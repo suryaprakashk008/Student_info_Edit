@@ -101,6 +101,7 @@ export default function Page() {
                            text-center
                            text-xl
                            
+                           
             ">
                     Resize the screen
                 </div>
@@ -112,7 +113,6 @@ export default function Page() {
                             p-5
                             bg-blue-500
                             w-full
-                            
                             "
                     >
                         width
@@ -122,10 +122,6 @@ export default function Page() {
                             p-5
                             bg-blue-500
                             w-full
-                            
-                         
-                            
-                            
                             ">
                         width
                     </div>
@@ -133,10 +129,7 @@ export default function Page() {
                             text-white
                             p-5
                             bg-blue-500
-                            w-full
-                            
-                            
-                            
+                            w-full 
                             ">
                         width
                     </div>
@@ -197,8 +190,60 @@ export default function Page() {
 
 
                 </div>
+                <div className="grid grid-cols-4 gap-2 mt-3">
+                    <div className="bg-red-500 p-5 col-span-2">
+                        A (2-cols)
+                    </div>
+                    <div className="bg-red-500 p-5">
+                        B
+                    </div>
+                    <div className="bg-red-500 p-5">
+                        C
+                    </div>
+
+                </div>
+                <div className="grid grid-cols-3 gap-2 mt-3 text-center">
+                    <div className="bg-red-500 p-5 row-span-2 ">
+                        A
+                    </div>
+                    <div className="bg-blue-500 p-5">
+                        B
+                    </div>
+                    <div className="bg-green-500 p-5">
+                        C
+                    </div>
+                    <div className="bg-yellow-500 p-5">
+                        D
+                    </div>
+
+                </div>
+
+                <div className=" flex mt-3 text-center gap-2">
+                    <div className="  bg-red-500 p-5">A</div>
+                    <div className=" bg-blue-500 p-5">B</div>
+                    <div className=" bg-green-500 p-5">C</div>
+                </div>
+
+                <div className="flex flex-col gap-2 mt-3 items-start">
+                    <div className="bg-red-500 p-5 ">A</div>
+                    <div className="bg-blue-500 p-5">B</div>
+                    <div className="bg-green-500 p-5">C</div>
+                </div>
+
+                <div className="flex justify-evenly items-center gap-2 h-40 border mt-3">
+                    <div className="bg-red-500 p-5">A</div>
+                    <div className="bg-blue-500 p-5">B</div>
+                    <div className="bg-green-500 p-5">C</div>
+                </div>
+                <div className="flex justify-around items-center gap-2 h-40 border mt-3">
+                    <div className="bg-red-500 p-5">A</div>
+                    <div className="bg-blue-500 p-5">B</div>
+                    <div className="bg-green-500 p-5">C</div>
+                </div>
+
 
             </div>
+            
             <div className="hidden lg:block w-64 bg-gray-800 text-white min-h-screen">
                 Sidebar
             </div>

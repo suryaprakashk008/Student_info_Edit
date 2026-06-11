@@ -5,10 +5,13 @@ export async function GET(request) {
   const { searchParams } = new URL(request.url);
 
   const page = Number(searchParams.get("page")) || 1;
-  const pageSize = 10;
+ 
 
-  const from = (page - 1) * pageSize;
-  const to = from + pageSize - 1;
+  const limit = Number(searchParams.get("limit")) || 10;
+
+
+  const from = (page - 1) * limit;
+  const to = from + limit - 1;
 
   const { data, count, error } = await supabase
     .from("students")
@@ -22,6 +25,6 @@ export async function GET(request) {
 
   return NextResponse.json({
     students: data,
-    totalPages: Math.ceil(count / pageSize),
+    totalPages: Math.ceil(count / limit),
   });
 }
