@@ -416,23 +416,23 @@ export default function Home() {
         setIsEditing(false);
     };
 
-    if (isResizing) {
-        return (
-            <div
-                className="fixed top-0 left-0 w-screen h-screen z-[9999]
-               bg-black/50 flex items-center justify-center"
-            >
-                <div className="flex flex-col items-center">
-                    <div className="w-20 h-20 border-4 border-white border-t-blue-500 rounded-full animate-spin"></div>
+    // if (isResizing) {
+    //     return (
+    //         <div
+    //             className="fixed top-0 left-0 w-screen h-screen z-[9999]
+    //            bg-black/50 flex items-center justify-center"
+    //         >
+    //             <div className="flex flex-col items-center">
+    //                 <div className="w-20 h-20 border-4 border-white border-t-blue-500 rounded-full animate-spin"></div>
 
-                    <p className="text-white mt-4 text-lg">
-                        Loading...
-                    </p>
-                </div>
-            </div>
+    //                 <p className="text-white mt-4 text-lg">
+    //                     Loading...
+    //                 </p>
+    //             </div>
+    //         </div>
 
-        );
-    }
+    //     );
+    // }
 
 
     return (
