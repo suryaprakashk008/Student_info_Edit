@@ -92,6 +92,34 @@ export default function Home() {
 
     const [pageInput, setPageInput] = useState("1");
 
+    const [isResizing, setIsResizing] = useState(false);
+
+
+    useEffect(() => {
+        let timeout;
+
+        const checkScreen = () => {
+            setIsResizing(true);
+
+            setIsMobile(window.innerWidth < 640);
+
+            clearTimeout(timeout);
+
+            timeout = setTimeout(() => {
+                setIsResizing(false);
+            }, 300);
+        };
+
+        checkScreen();
+
+        window.addEventListener("resize", checkScreen);
+
+        return () => {
+            window.removeEventListener("resize", checkScreen);
+            clearTimeout(timeout);
+        };
+    }, []);
+
     useEffect(() => {
         async function checkConnection() {
             const { data, error } = await supabase
@@ -120,6 +148,14 @@ export default function Home() {
     }, [page, isMobile]);
 
     useEffect(() => {
+
+        setStudent([]);
+        setTotalPages(1);
+        setPage(1);
+
+    }, [isMobile]);
+
+    useEffect(() => {
         const checkScreen = () => {
             setIsMobile(window.innerWidth < 640);
         };
@@ -136,14 +172,14 @@ export default function Home() {
         setPageInput(page.toString());
     }, [page]);
 
-    
+
 
     async function getStudents(pageNumber = 1) {
         // const { data, error } = await supabase
         //     .from("students")
         //     .select("*")
         //     .order("id", { ascending: true });
-         
+
 
         const limit = isMobile ? 4 : 10;
 
@@ -152,10 +188,10 @@ export default function Home() {
         );
 
         const result = await res.json();
-
+        if (!result.students) return;
         setStudent(result.students);
         setTotalPages(result.totalPages);
-        
+
 
         // console.log(data);
         // if (error) {
@@ -380,11 +416,30 @@ export default function Home() {
         setIsEditing(false);
     };
 
+    if (isResizing) {
+        return (
+            <div
+                className="fixed top-0 left-0 w-screen h-screen z-[9999]
+               bg-black/50 flex items-center justify-center"
+            >
+                <div className="flex flex-col items-center">
+                    <div className="w-20 h-20 border-4 border-white border-t-blue-500 rounded-full animate-spin"></div>
+
+                    <p className="text-white mt-4 text-lg">
+                        Loading...
+                    </p>
+                </div>
+            </div>
+
+        );
+    }
+
 
     return (
 
 
         <div className="overflow-x-hidden overscroll-x-none ">
+
             {/* <h1>Check Console (F12)</h1> */}
 
             <h1 className="text-2xl flex justify-center items-center p-4">Student Home page</h1>
@@ -470,7 +525,8 @@ export default function Home() {
                 </Link> */}
                 <br />
                 <br />
-                <h1 className="">Students List</h1>
+                <h1 className="ml-5 sm:ml-0">Students List</h1>
+
 
                 <div className="block sm:hidden">
                     <div className="grid grid-cols-1 gap-4">
@@ -486,6 +542,8 @@ export default function Home() {
                                              shadow-md
                                              cursor-pointer
                                              hover:bg-gray-100
+                                             ml-5
+                                             mr-5
                                             "
                             >
                                 <p>
@@ -506,7 +564,7 @@ export default function Home() {
                 </div>
 
 
-                <div className="hidden sm:block overflow-x-auto">
+                <div className="hidden sm:block overflow-x-hidden">
 
 
 
