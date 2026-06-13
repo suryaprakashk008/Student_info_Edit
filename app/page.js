@@ -94,31 +94,10 @@ export default function Home() {
 
     const [isResizing, setIsResizing] = useState(false);
 
+    const [search, setSearch] = useState("");
 
-    useEffect(() => {
-        let timeout;
+    const [searchLoading, setSearchLoading] = useState(false);
 
-        const checkScreen = () => {
-            setIsResizing(true);
-
-            setIsMobile(window.innerWidth < 640);
-
-            clearTimeout(timeout);
-
-            timeout = setTimeout(() => {
-                setIsResizing(false);
-            }, 300);
-        };
-
-        checkScreen();
-
-        window.addEventListener("resize", checkScreen);
-
-        return () => {
-            window.removeEventListener("resize", checkScreen);
-            clearTimeout(timeout);
-        };
-    }, []);
 
     useEffect(() => {
         async function checkConnection() {
@@ -149,6 +128,35 @@ export default function Home() {
 
     useEffect(() => {
 
+        if (search === "") {
+            setSearchLoading(false);
+            getStudents(1);
+            return;
+        }
+
+        setSearchLoading(true);
+
+        const timer = setTimeout(async () => {
+
+            try {
+                await getStudents(1);
+            } finally {
+                setSearchLoading(false);
+            }
+
+        }, 500);
+
+        return () => {
+            clearTimeout(timer);
+            setSearchLoading(false);
+        };
+
+    }, [search]);
+
+
+
+    useEffect(() => {
+
         setStudent([]);
         setTotalPages(1);
         setPage(1);
@@ -175,56 +183,20 @@ export default function Home() {
 
 
     async function getStudents(pageNumber = 1) {
-        // const { data, error } = await supabase
-        //     .from("students")
-        //     .select("*")
-        //     .order("id", { ascending: true });
-
 
         const limit = isMobile ? 4 : 10;
 
         const res = await fetch(
-            `/api/students?page=${pageNumber}&limit=${limit}`
+            `/api/students?page=${pageNumber}&limit=${limit}&search=${search}`
         );
 
         const result = await res.json();
-        if (!result.students) return;
+
         setStudent(result.students);
         setTotalPages(result.totalPages);
 
-
-        // console.log(data);
-        // if (error) {
-        //     console.log(error);
-        // } else {
-        //     setStudent(data);
-        // }
     }
 
-
-
-    //           const addStudent = () => {
-    //              if (input.trim() === "") return;
-
-    //             setStudent([...students, input]);
-    //             setInput("");
-    //   };
-
-    //    const addStudent = () => {
-
-    //       if (input.trim() === "") return;
-
-    //       const updatedStudents = [...students, input];
-
-    //        setStudent(updatedStudents);
-
-    //        localStorage.setItem(
-    //        "students",
-    //        JSON.stringify(updatedStudents)
-    //       );
-
-    //         setInput("");
-    //         };
 
 
     const addStudent1 = async () => {
@@ -416,6 +388,8 @@ export default function Home() {
         setIsEditing(false);
     };
 
+
+
     // if (isResizing) {
     //     return (
     //         <div
@@ -440,69 +414,15 @@ export default function Home() {
 
         <div className="overflow-x-hidden overscroll-x-none ">
 
-            {/* <h1>Check Console (F12)</h1> */}
+
 
             <h1 className="text-2xl flex justify-center items-center p-4">Student Home page</h1>
             <br />
             <br />
-            {/* 
-            <Link href="/teachers">
 
-                <h2 className="text-2xl text-blue-400 cursor-pointer hover:text-blue-600 p-4">
-                    Teachers
-                </h2>
-
-            </Link>
-            <Link href="/schoolbuses">
-
-                <h2 className="text-2xl text-blue-400 cursor-pointer hover:text-blue-600 p-4">
-                    School Buses
-                </h2>
-
-            </Link> */}
             <div>
                 <div className="px-4 flex justify-end">
-                    {/* <input className="h-12 px-3 border-1 mr-2 ml-2"
-                    type="text"
-                    placeholder="Enter the name"
-                    value={input}
-                    onChange={(e) => setInput(e.target.value)}
-                /> */}
-                    {/* <Input
-                        className="w-74 mr-2 ml-2 p-5"
-                        type="text"
-                        placeholder="Enter name"
-                        value={input}
-                        onChange={(e) => setInput(e.target.value)}
-                    />
 
-                    <Input
-                        className="w-74 mr-3 p-5"
-                        type="number"
-                        placeholder="Enter age"
-                        value={age}
-                        onChange={(e) => setAge(e.target.value)}
-                    />
-
-                    <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                            <Button className="mt-1 mr-2" variant="outline">
-                                {gender || "Gender"}
-                            </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent>
-                            <DropdownMenuItem
-                            onClick={()=>setGender("Male")}
-                            >
-                             Male
-                            </DropdownMenuItem>
-                            <DropdownMenuItem
-                            onClick={()=>setGender("Female")}
-                            >
-                             Female
-                            </DropdownMenuItem>
-                        </DropdownMenuContent>
-                    </DropdownMenu> */}
 
                     <Button
                         onClick={() => setIsAddDrawerOpen(true)}
@@ -511,31 +431,60 @@ export default function Home() {
                         Add
                     </Button>
                 </div>
-                {/* <ul>
-           {students.map((student, index) => (
-           <li className="ml-2 mt-2"  key={index}>
-            {student}
-            </li>
-            ))}
-           </ul> */}
-                <br />
-                <br />
-                {/* <Link href="/display" target="_blank" className="ml-3 ">
-                    Display Students
-                </Link> */}
-                <br />
-                <br />
-                <h1 className="ml-5 sm:ml-0">Students List</h1>
 
+                <br />
+                <br />
 
+                <br />
+                <br />
+                <h1 className="ml-6 sm:ml-6">Students List</h1>
+
+                <div className="relative mx-5 sm:w-80">
+
+                    <Input
+                        type="text"
+                        placeholder="Search student..."
+                        value={search}
+                        onChange={(e) => {
+                            setSearch(e.target.value);
+                            setPage(1);
+                        }}
+                        className="w-full pr-16 "
+                    />
+
+                    {searchLoading && (
+                        <div
+                            className="
+                absolute
+                right-3
+                top-1/2
+                -translate-y-1/2
+                w-4
+                h-4
+                border-2
+                border-gray-300
+                border-t-blue-500
+                rounded-full
+                animate-spin
+               
+            "
+                        />
+                    )}
+
+                </div>
+                <br/>
                 <div className="block sm:hidden">
-                    <div className="grid grid-cols-1 gap-4">
 
-                        {students.map((student) => (
-                            <div
-                                key={student.id}
-                                onClick={() => openDrawer(student)}
-                                className="
+                    {students.length === 0 ? (
+                        <p className="text-center mt-4 text-black">No Students found</p>
+                    ) : (
+                        <div className="grid grid-cols-1 gap-4">
+
+                            {students.map((student) => (
+                                <div
+                                    key={student.id}
+                                    onClick={() => openDrawer(student)}
+                                    className="
                                              border
                                              rounded-lg
                                              p-4
@@ -545,22 +494,23 @@ export default function Home() {
                                              ml-5
                                              mr-5
                                             "
-                            >
-                                <p>
-                                    <strong>Name:</strong> {student.name}
-                                </p>
+                                >
+                                    <p>
+                                        <strong>Name:</strong> {student.name}
+                                    </p>
 
-                                <p>
-                                    <strong>Age:</strong> {student.age}
-                                </p>
+                                    <p>
+                                        <strong>Age:</strong> {student.age}
+                                    </p>
 
-                                <p>
-                                    <strong>Gender:</strong> {student.gender}
-                                </p>
-                            </div>
-                        ))}
+                                    <p>
+                                        <strong>Gender:</strong> {student.gender}
+                                    </p>
+                                </div>
+                            ))}
 
-                    </div>
+                        </div>
+                    )}
                 </div>
 
 
@@ -581,46 +531,36 @@ export default function Home() {
                         </TableHeader>
 
                         <TableBody>
-                            {students.map((student) => (
-                                <TableRow
-                                    key={student.id}
-                                    className="cursor-pointer hover:bg-gray-200"
-                                    onClick={() => openDrawer(student)}
-                                >
-                                    <TableCell className="">
-                                        {student.id}
-                                    </TableCell>
-                                    <TableCell className="">
-                                        {student.name}
-                                    </TableCell>
-                                    <TableCell className="">{student.age}</TableCell>
-                                    <TableCell className="">{student.gender}</TableCell>
 
-                                    {/* <TableCell className="">
-                                        <div className="">
-                                            <Button
-                                                className="px-3 py-1"
-                                                onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    deleteStudent(student.id);
-                                                }}
-                                            >
-                                                Delete
-                                            </Button>
-                                        </div>
-                                    </TableCell> */}
-                                    {/* <TableCell className="border border-white px-4 py-2">
-                                        <div className="flex justify-center">
-                                            <button
-                                                className="bg-yellow-400 text-black px-3 py-1"
-                                                onClick={() => editStudent(student)}
-                                            >
-                                                Edit
-                                            </button>
-                                        </div>
-                                    </td> */}
+                            {students.length === 0 ? (
+                                <TableRow>
+                                    <TableCell
+                                        colSpan={4}
+                                        className="text-center"
+                                    >
+                                        No students found
+                                    </TableCell>
                                 </TableRow>
-                            ))}
+                            ) : (
+                                students.map((student) => (
+                                    <TableRow
+                                        key={student.id}
+                                        className="cursor-pointer hover:bg-gray-200"
+                                        onClick={() => openDrawer(student)}
+                                    >
+                                        <TableCell className="">
+                                            {student.id}
+                                        </TableCell>
+                                        <TableCell className="">
+                                            {student.name}
+                                        </TableCell>
+                                        <TableCell className="">{student.age}</TableCell>
+                                        <TableCell className="">{student.gender}</TableCell>
+
+
+                                    </TableRow>
+                                ))
+                            )}
                         </TableBody>
                     </Table>
                 </div>
@@ -1034,7 +974,7 @@ export default function Home() {
                 {loading && (
                     <div
                         className="fixed top-0 left-0 w-screen h-screen z-[9999]
-               bg-black/50 flex items-center justify-center"
+                         backdrop-blur-sm bg-black/50 flex items-center justify-center"
                     >
                         <div className="flex flex-col items-center">
                             <div className="w-20 h-20 border-4 border-white border-t-blue-500 rounded-full animate-spin"></div>
