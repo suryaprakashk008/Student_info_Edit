@@ -98,6 +98,10 @@ export default function Home() {
 
     const [searchLoading, setSearchLoading] = useState(false);
 
+    const [sortField, setSortField] = useState("id");
+
+    const [sortOrder, setSortOrder] = useState("asc");
+
 
     useEffect(() => {
         async function checkConnection() {
@@ -125,6 +129,16 @@ export default function Home() {
 
     //     getStudents(page);
     // }, [page, isMobile]);
+
+    useEffect(() => {
+
+        if (isMobile === null) return;
+
+        getStudents(page);
+
+    }, [page, isMobile, sortField, sortOrder]);
+
+
     console.log("Fetching with", isMobile ? 4 : 10);
     useEffect(() => {
 
@@ -198,7 +212,7 @@ export default function Home() {
         console.log("limit =", limit);
 
         const res = await fetch(
-            `/api/students?page=${pageNumber}&limit=${limit}&search=${search}`
+            `/api/students?page=${pageNumber}&limit=${limit}&search=${search}&sortField=${sortField}&sortOrder=${sortOrder}`
         );
 
         const result = await res.json();
@@ -419,6 +433,27 @@ export default function Home() {
     //     );
     // }
 
+    const handleSort = (field) => {
+        if (sortField === field) {
+        setSortOrder(
+            sortOrder === "asc" ? "desc" : "asc"
+        );
+    } else {
+        setSortField(field);
+        setSortOrder("asc");
+    }
+
+    };
+
+    const getSortIcon = (field) => {
+
+    if (sortField !== field) {
+        return "";
+    }
+
+    return sortOrder === "asc" ? "▲" : "▼";
+};
+
 
     return (
 
@@ -532,10 +567,25 @@ export default function Home() {
                     <Table className=" w-full lg:table-fixed sm:table-fixed">
                         <TableHeader>
                             <TableRow>
-                                <TableHead className=" ">ID</TableHead>
-                                <TableHead className=" ">Name</TableHead>
-                                <TableHead className=" ">Age</TableHead>
-                                <TableHead className=" ">Gender</TableHead>
+                                <TableHead className="cursor-pointer"
+                                onClick={() => handleSort("id")}
+                                >ID
+                                {getSortIcon("id")}
+                                </TableHead>
+                                <TableHead
+                                    className="cursor-pointer"
+                                    onClick={() => handleSort("name")}
+                                >
+                                    Name {getSortIcon("name")}
+                                </TableHead>
+                                <TableHead className="cursor-pointer
+                                "
+                                >Age
+                                
+                                </TableHead>
+                                <TableHead className="cursor-pointer "
+                                >Gender
+                                </TableHead>
 
                                 {/* <th className="border border-white ">Edit option</th> */}
                             </TableRow>

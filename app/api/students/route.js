@@ -11,6 +11,12 @@ export async function GET(request) {
 
   const search = searchParams.get("search") || "";
 
+  const sortField =
+    searchParams.get("sortField") || "id";
+
+  const sortOrder =
+    searchParams.get("sortOrder") || "asc";
+
 
   const from = (page - 1) * limit;
   const to = from + limit - 1;
@@ -18,7 +24,9 @@ export async function GET(request) {
   let query = supabase
     .from("students")
     .select("*", { count: "exact" })
-    .order("id");
+    .order(sortField, {
+    ascending: sortOrder === "asc",
+});
 
   if (search) {
     query = query.ilike("name", `${search}%`);
