@@ -88,7 +88,7 @@ export default function Home() {
 
     const [EditGenderError, setEditGenderError] = useState("");
 
-    const [isMobile, setIsMobile] = useState(false);
+    const [isMobile, setIsMobile] = useState(null);
 
     const [pageInput, setPageInput] = useState("1");
 
@@ -120,10 +120,18 @@ export default function Home() {
     //     getStudents();
     // }, []);
 
+    // useEffect(() => {
+    //     //  console.log(document.documentElement.scrollWidth===window.innerWidth);
+
+    //     getStudents(page);
+    // }, [page, isMobile]);
+    console.log("Fetching with", isMobile ? 4 : 10);
     useEffect(() => {
-        //  console.log(document.documentElement.scrollWidth===window.innerWidth);
+
+        if (isMobile === null) return;
 
         getStudents(page);
+
     }, [page, isMobile]);
 
     useEffect(() => {
@@ -185,6 +193,9 @@ export default function Home() {
     async function getStudents(pageNumber = 1) {
 
         const limit = isMobile ? 4 : 10;
+
+        console.log("isMobile =", isMobile);
+        console.log("limit =", limit);
 
         const res = await fetch(
             `/api/students?page=${pageNumber}&limit=${limit}&search=${search}`
@@ -472,7 +483,7 @@ export default function Home() {
                     )}
 
                 </div>
-                <br/>
+                <br />
                 <div className="block sm:hidden">
 
                     {students.length === 0 ? (
